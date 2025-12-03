@@ -60,6 +60,9 @@ namespace StarterAssets
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
 
+		private float tempRotationSpeed;
+		private float tempMoveSpeed;
+
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
@@ -108,6 +111,9 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			tempMoveSpeed = MoveSpeed;
+			tempRotationSpeed = RotationSpeed;
 		}
 
 		private void Update()
@@ -115,6 +121,8 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+
+			RotationSpeed = Time.timeScale == 0 ? 0 : tempRotationSpeed;
 		}
 
 		private void LateUpdate()

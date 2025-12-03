@@ -1,23 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
 public class DialogueManager : MonoBehaviour
 {
+    [Header("Dialogue")]
     public TextMeshProUGUI dialogueTextBox;
     public TextMeshProUGUI nameTextBox;
+    public TextMeshProUGUI objectiveTextBox;
     public AudioClip dialogueSFX;
 
     private Queue<string> dialogue;
     private float dialogueSpeed;
     private bool isTalking = false;
     private bool dialogueEnabled = false;
+    private bool giveObjective = false;
+    private string objective;
+    private bool gameIsPaused = false;
 
     private void Start()
     {
         dialogue = new();
+    }
+
+    private void Update()
+    {
+        gameIsPaused = Time.timeScale == 0;
+
+        dialogueTextBox.enabled = dialogueEnabled && !gameIsPaused;
+        nameTextBox.enabled = dialogueEnabled && !gameIsPaused;
     }
 
     public void StartDialogue(Dialogue dialogue)
@@ -25,8 +39,10 @@ public class DialogueManager : MonoBehaviour
         Debug.Log($"{dialogue.name} is talking...");
 
         dialogueEnabled = true;
-
         dialogueSpeed = dialogue.dialogueSpeed;
+        nameTextBox.text = dialogue.name;
+        giveObjective = dialogue.giveObjective;
+        objective = dialogue.objective;
 
         this.dialogue.Clear();
 
@@ -40,7 +56,7 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        if(dialogue.Count == 0)
+        if (dialogue.Count == 0)
         {
             EndDialogue();
             return;
@@ -48,21 +64,20 @@ public class DialogueManager : MonoBehaviour
 
         string sentence = dialogue.Dequeue();
         StopAllCoroutines();
-        StartCoroutine(Write(sentence));
+        StartCoroutine(Write(sentence, dialogueTextBox));
 
         Debug.Log(sentence);
     }
 
-    private IEnumerator Write(string sentence)
+    private IEnumerator Write(string sentence, TextMeshProUGUI textBox)
     {
         isTalking = true;
 
-        dialogueTextBox.text = string.Empty;
-        //if (textBox == dialogueTextBox) nameTextBox.text = objectName;
+        textBox.text = string.Empty;
 
         foreach (char letter in sentence.ToCharArray())
         {
-            dialogueTextBox.text += letter;
+            textBox.text += letter;
             if (letter.ToString() != " ") Camera.main.GetComponent<AudioSource>().PlayOneShot(dialogueSFX);
             yield return new WaitForSeconds(0.1f / dialogueSpeed);
         }
@@ -78,9 +93,20 @@ public class DialogueManager : MonoBehaviour
         dialogueEnabled = false;
         dialogueTextBox.text = string.Empty;
         nameTextBox.text = string.Empty;
+
+        if (giveObjective && objectiveTextBox.text != objective)
+        {
+            StopAllCoroutines();
+            StartCoroutine(Write(objective, objectiveTextBox));
+        }
     }
 
     public bool IsTalking => isTalking;
 
     public bool DialogueEnabled => dialogueEnabled;
+
+    public void EnableDialogue(bool enable)
+    {
+        dialogueEnabled = enable;
+    }
 }
