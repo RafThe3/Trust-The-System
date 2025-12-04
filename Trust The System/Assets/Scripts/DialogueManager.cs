@@ -32,6 +32,7 @@ public class DialogueManager : MonoBehaviour
 
         dialogueTextBox.enabled = dialogueEnabled && !gameIsPaused;
         nameTextBox.enabled = dialogueEnabled && !gameIsPaused;
+        objectiveTextBox.enabled = !gameIsPaused;
     }
 
     public void StartDialogue(Dialogue dialogue)

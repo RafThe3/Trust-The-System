@@ -20,27 +20,34 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            EnablePauseMenu();
+            if (Time.timeScale != 0)
+            {
+                EnablePauseMenu();
+            }
+            else if (Time.timeScale == 0 && pauseMenu.enabled)
+            {
+                Resume();
+            }
         }
 
         if (AutoLockCursor)
         {
-            Cursor.lockState = pauseMenu.enabled ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.lockState = Time.timeScale == 0 ? CursorLockMode.None : CursorLockMode.Locked;
         }
     }
 
     public void EnablePauseMenu()
     {
-        pauseMenu.enabled = !pauseMenu.enabled;
-        Time.timeScale = Time.timeScale == 1 ? 0 : 1;
-        Cursor.lockState = Time.timeScale == 1 ? CursorLockMode.Locked : CursorLockMode.None;
+        pauseMenu.enabled = true;
+        Time.timeScale = 0;
+        //Cursor.lockState = CursorLockMode.None;
     }
 
     public void Resume()
     {
         pauseMenu.enabled = false;
         Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void Quit()

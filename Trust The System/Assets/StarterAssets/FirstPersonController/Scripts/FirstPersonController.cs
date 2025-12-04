@@ -113,7 +113,7 @@ namespace StarterAssets
 			_fallTimeoutDelta = FallTimeout;
 
 			tempMoveSpeed = MoveSpeed;
-			tempRotationSpeed = RotationSpeed;
+			if (tempRotationSpeed == 0) tempRotationSpeed = RotationSpeed;
 		}
 
 		private void Update()
@@ -128,6 +128,11 @@ namespace StarterAssets
 		private void LateUpdate()
 		{
 			CameraRotation();
+		}
+
+		public void SetRotationSpeed(float speed)
+		{
+			tempRotationSpeed = speed;
 		}
 
 		private void GroundedCheck()
