@@ -23,27 +23,27 @@ public class Player : MonoBehaviour
     {
         gameIsPaused = Time.timeScale == 0;
 
-        Dialogue();
+        if (gameIsPaused)
+        {
+            interactTextBox.enabled = false;
+            return;
+        }
 
-        if (gameIsPaused) interactTextBox.enabled = false;
+        Dialogue();
+        Interactable();
     }
 
     private void Dialogue()
     {
-        if (gameIsPaused)
-        {
-            return;
-        }
-
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, distance))
         {
             Debug.Log("Hitting something...");
 
             Collider npc = hit.collider;
             DialogueTrigger dialogueTrigger = npc.GetComponent<DialogueTrigger>();
+            DialogueManager dialogueManager = FindFirstObjectByType<DialogueManager>();
             bool hasDialogue = npc.TryGetComponent(out DialogueTrigger _);
             bool isNPC = npc.CompareTag("NPC");
-            DialogueManager dialogueManager = FindFirstObjectByType<DialogueManager>();
 
             if (!isNPC)
             {
@@ -71,6 +71,33 @@ public class Player : MonoBehaviour
         else
         {
             interactTextBox.enabled = false;
+        }
+    }
+
+    private void Interactable()
+    {
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, distance))
+        {
+            Collider interactable = hit.collider;
+            ObjectiveTrigger objectiveTrigger = interactable.GetComponent<ObjectiveTrigger>();
+            bool isInteractable = interactable.CompareTag("Interactable");
+            bool hasTrigger = interactable.TryGetComponent(out ObjectiveTrigger _);
+
+            if (!isInteractable)
+            {
+                return;
+            }
+
+            interactTextBox.enabled = true;
+            interactTextBox.text = interactText;
+            interactTextBox.transform.position = Camera.main.WorldToScreenPoint(interactable.transform.position);
+
+            if (hasTrigger && Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("Hitting E...");
+
+                objectiveTrigger.GiveObjective();
+            }
         }
     }
 }

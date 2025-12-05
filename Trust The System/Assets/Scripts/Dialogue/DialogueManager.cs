@@ -11,14 +11,17 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI dialogueTextBox;
     public TextMeshProUGUI nameTextBox;
     public TextMeshProUGUI objectiveTextBox;
+    
     public AudioClip dialogueSFX;
 
     private Queue<string> dialogue;
     private float dialogueSpeed;
     private bool isTalking = false;
     private bool dialogueEnabled = false;
-    private bool giveObjective = false;
+
     private string objective;
+    private bool giveObjective = false;
+    
     private bool gameIsPaused = false;
 
     private void Start()
@@ -42,8 +45,9 @@ public class DialogueManager : MonoBehaviour
         dialogueEnabled = true;
         dialogueSpeed = dialogue.dialogueSpeed;
         nameTextBox.text = dialogue.name;
-        giveObjective = dialogue.giveObjective;
+
         objective = dialogue.objective;
+        giveObjective = dialogue.giveObjective;
 
         this.dialogue.Clear();
 

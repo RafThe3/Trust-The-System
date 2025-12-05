@@ -10,6 +10,6 @@ public class Dialogue
     [Min(0)] public float dialogueSpeed = 1;
 
     [Header("Objective")]
-    [TextArea(2, 5)] public string objective;
+    [TextArea(3, 5)] public string objective;
     public bool giveObjective = false;
 }
