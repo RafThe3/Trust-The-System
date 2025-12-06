@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class DialogueManager : MonoBehaviour
@@ -69,12 +67,12 @@ public class DialogueManager : MonoBehaviour
 
         string sentence = dialogue.Dequeue();
         StopAllCoroutines();
-        StartCoroutine(Write(sentence, dialogueTextBox));
+        StartCoroutine(Write(sentence, dialogueTextBox, dialogueSFX));
 
         Debug.Log(sentence);
     }
 
-    private IEnumerator Write(string sentence, TextMeshProUGUI textBox)
+    private IEnumerator Write(string sentence, TextMeshProUGUI textBox, AudioClip sfx)
     {
         isTalking = true;
 
@@ -83,7 +81,7 @@ public class DialogueManager : MonoBehaviour
         foreach (char letter in sentence.ToCharArray())
         {
             textBox.text += letter;
-            if (letter.ToString() != " ") Camera.main.GetComponent<AudioSource>().PlayOneShot(dialogueSFX);
+            if (letter.ToString() != " ") Camera.main.GetComponent<AudioSource>().PlayOneShot(sfx);
             yield return new WaitForSeconds(0.1f / dialogueSpeed);
         }
 
@@ -102,7 +100,7 @@ public class DialogueManager : MonoBehaviour
         if (giveObjective && objectiveTextBox.text != objective)
         {
             StopAllCoroutines();
-            StartCoroutine(Write(objective, objectiveTextBox));
+            StartCoroutine(Write(objective, objectiveTextBox, FindFirstObjectByType<ObjectiveManager>().objectiveSFX));
         }
     }
 

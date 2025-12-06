@@ -12,11 +12,12 @@ public class ObjectiveManager : MonoBehaviour
 
     private void Start()
     {
-        objectiveTextBox.enabled = !gameIsPaused;
+        objectiveTextBox.text = string.Empty;
     }
 
     private void Update()
     {
+        objectiveTextBox.enabled = !gameIsPaused;
         gameIsPaused = Time.timeScale == 0;
     }
 

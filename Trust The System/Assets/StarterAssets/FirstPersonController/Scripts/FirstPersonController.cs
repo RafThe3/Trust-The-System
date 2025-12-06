@@ -60,8 +60,10 @@ namespace StarterAssets
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
 
-		private float tempRotationSpeed;
-		private float tempMoveSpeed;
+		private float _tempRotationSpeed;
+
+		[HideInInspector] public bool _isSprinting;
+		[HideInInspector] public float _tempSprintSpeed;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -112,8 +114,8 @@ namespace StarterAssets
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
 
-			tempMoveSpeed = MoveSpeed;
-			if (tempRotationSpeed == 0) tempRotationSpeed = RotationSpeed;
+			if (_tempRotationSpeed == 0) _tempRotationSpeed = RotationSpeed;
+			_tempSprintSpeed = SprintSpeed;
 		}
 
 		private void Update()
@@ -122,7 +124,8 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 
-			RotationSpeed = Time.timeScale == 0 ? 0 : tempRotationSpeed;
+			RotationSpeed = Time.timeScale == 0 ? 0 : _tempRotationSpeed;
+			_isSprinting = _input.sprint;
 		}
 
 		private void LateUpdate()
@@ -132,7 +135,7 @@ namespace StarterAssets
 
 		public void SetRotationSpeed(float speed)
 		{
-			tempRotationSpeed = speed;
+			_tempRotationSpeed = speed;
 		}
 
 		private void GroundedCheck()
