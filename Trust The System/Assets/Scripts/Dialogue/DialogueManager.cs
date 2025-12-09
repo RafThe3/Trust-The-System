@@ -16,7 +16,11 @@ public class DialogueManager : MonoBehaviour
     private float dialogueSpeed;
     private bool isTalking = false;
     private bool dialogueEnabled = false;
+    private bool canTalk = true;
+    private bool disableAfterInteract = false;
 
+    private ObjectiveTrigger objectiveTrigger;
+    private bool enableInteractable = false;
     private string objective;
     private bool giveObjective = false;
     
@@ -38,11 +42,23 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(Dialogue dialogue)
     {
+        if (!canTalk)
+        {
+            return;
+        }
+
         Debug.Log($"{dialogue.name} is talking...");
 
         dialogueEnabled = true;
         dialogueSpeed = dialogue.dialogueSpeed;
         nameTextBox.text = dialogue.name;
+        disableAfterInteract = dialogue.disableDialogueAfterInteract;
+        enableInteractable = dialogue.enableInteractable;
+
+        if (enableInteractable)
+        {
+            objectiveTrigger = dialogue.objectiveTrigger;
+        }
 
         objective = dialogue.objective;
         giveObjective = dialogue.giveObjective;
@@ -59,6 +75,11 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
+        if (!canTalk)
+        {
+            return;
+        }
+
         if (dialogue.Count == 0)
         {
             EndDialogue();
@@ -101,12 +122,24 @@ public class DialogueManager : MonoBehaviour
         {
             StopAllCoroutines();
             StartCoroutine(Write(objective, objectiveTextBox, FindFirstObjectByType<ObjectiveManager>().objectiveSFX));
+
+            if (enableInteractable && objectiveTrigger)
+            {
+                objectiveTrigger.objective.giveObjective = true;
+            }
+        }
+
+        if (disableAfterInteract)
+        {
+            canTalk = false;
         }
     }
 
     public bool IsTalking => isTalking;
 
     public bool DialogueEnabled => dialogueEnabled;
+
+    public bool CanTalk => canTalk;
 
     public void EnableDialogue(bool enable)
     {

@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            interactTextBox.enabled = true;
+            interactTextBox.enabled = dialogueManager.CanTalk;
             interactTextBox.text = !dialogueManager.DialogueEnabled ? interactText : dialogueText;
             interactTextBox.transform.position = Camera.main.WorldToScreenPoint(npc.transform.position);
 
@@ -177,7 +177,7 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            interactTextBox.enabled = true;
+            interactTextBox.enabled = objectiveTrigger.objective.giveObjective;
             interactTextBox.text = interactText;
             interactTextBox.transform.position = Camera.main.WorldToScreenPoint(interactable.transform.position);
 

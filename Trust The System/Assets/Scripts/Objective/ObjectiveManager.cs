@@ -29,6 +29,11 @@ public class ObjectiveManager : MonoBehaviour
         {
             StopAllCoroutines();
             StartCoroutine(Write(objective.objective, objectiveTextBox));
+
+            if (objective.disableAfterInteract)
+            {
+                objective.giveObjective = false;
+            }
         }
     }
 

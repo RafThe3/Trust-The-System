@@ -7,10 +7,18 @@ public class ObjectiveTrigger : MonoBehaviour
 
     public void GiveObjective()
     {
+        if (!objective.giveObjective)
+        {
+            return;
+        }
+
         DialogueTrigger other = objective.dialogueTrigger;
+        Dialogue dialogue = other.dialogue;
 
         FindFirstObjectByType<ObjectiveManager>().GiveObjective(objective);
-        other.dialogue.dialogue = objective.dialogue; // changes the DIALOGUE of the NPC specified in the dialogue class
-        other.dialogue.objective = objective.objective_2; // changes the OBJECTIVE of the NPC specified in the dialogue class
+        dialogue.dialogue = objective.dialogue; // changes the DIALOGUE of the NPC specified in the dialogue class
+        dialogue.objective = objective.objective_2; // changes the OBJECTIVE of the NPC specified in the dialogue class
+        dialogue.objectiveTrigger = objective.interactableToEnable; // changes the INTERACTABLE to be enabled when next dialogue if finished
+        dialogue.enableInteractable = true;
     }
 }
