@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -15,12 +16,15 @@ public class DialogueManager : MonoBehaviour
     private Queue<string> dialogue;
     private float dialogueSpeed;
     private bool isTalking = false;
-    private bool dialogueEnabled = false;
-    private bool canTalk = true;
+    private bool showDialogue = false;
+    private bool enableDialogue = true;
     private bool disableAfterInteract = false;
 
     private ObjectiveTrigger objectiveTrigger;
+    private Dialogue dialogue1;
+    private Dialogue other;
     private bool enableInteractable = false;
+    private bool enableOtherDialogue = false;
     private string objective;
     private bool giveObjective = false;
     
@@ -35,29 +39,38 @@ public class DialogueManager : MonoBehaviour
     {
         gameIsPaused = Time.timeScale == 0;
 
-        dialogueTextBox.enabled = dialogueEnabled && !gameIsPaused;
-        nameTextBox.enabled = dialogueEnabled && !gameIsPaused;
+        dialogueTextBox.enabled = showDialogue && !gameIsPaused;
+        nameTextBox.enabled = showDialogue && !gameIsPaused;
         objectiveTextBox.enabled = !gameIsPaused;
     }
 
     public void StartDialogue(Dialogue dialogue)
     {
-        if (!canTalk)
+        dialogue1 = dialogue;
+        enableDialogue = dialogue.enableDialogue;
+
+        if (!enableDialogue)
         {
             return;
         }
 
         Debug.Log($"{dialogue.name} is talking...");
 
-        dialogueEnabled = true;
+        showDialogue = true;
         dialogueSpeed = dialogue.dialogueSpeed;
         nameTextBox.text = dialogue.name;
         disableAfterInteract = dialogue.disableDialogueAfterInteract;
         enableInteractable = dialogue.enableInteractable;
+        enableOtherDialogue = dialogue.enableOtherDialogue;
 
         if (enableInteractable)
         {
             objectiveTrigger = dialogue.objectiveTrigger;
+        }
+
+        if (enableOtherDialogue)
+        {
+            other = dialogue.other.dialogue;
         }
 
         objective = dialogue.objective;
@@ -75,7 +88,7 @@ public class DialogueManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        if (!canTalk)
+        if (!enableDialogue)
         {
             return;
         }
@@ -114,7 +127,7 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("End of conversation...");
 
         dialogue.Clear();
-        dialogueEnabled = false;
+        showDialogue = false;
         dialogueTextBox.text = string.Empty;
         nameTextBox.text = string.Empty;
 
@@ -129,20 +142,30 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
+        if (enableOtherDialogue)
+        {
+            other.enableDialogue = true;
+        }
+
         if (disableAfterInteract)
         {
-            canTalk = false;
+            dialogue1.enableDialogue = false;
         }
     }
 
     public bool IsTalking => isTalking;
 
-    public bool DialogueEnabled => dialogueEnabled;
+    public bool ShowingDialogue => showDialogue;
 
-    public bool CanTalk => canTalk;
+    public bool DialogueEnabled => enableDialogue;
+
+    public void ShowDialogue(bool showDialogue)
+    {
+        this.showDialogue = showDialogue;
+    }
 
     public void EnableDialogue(bool enable)
     {
-        dialogueEnabled = enable;
+        enableDialogue = enable;
     }
 }

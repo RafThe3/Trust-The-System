@@ -131,6 +131,7 @@ public class Player : MonoBehaviour
             Collider npc = hit.collider;
             DialogueTrigger dialogueTrigger = npc.GetComponent<DialogueTrigger>();
             DialogueManager dialogueManager = FindFirstObjectByType<DialogueManager>();
+            Dialogue dialogue = null;
             bool hasDialogue = npc.TryGetComponent(out DialogueTrigger _);
             bool isNPC = npc.CompareTag("NPC");
 
@@ -139,15 +140,20 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            interactTextBox.enabled = dialogueManager.CanTalk;
-            interactTextBox.text = !dialogueManager.DialogueEnabled ? interactText : dialogueText;
+            if (hasDialogue)
+            {
+                dialogue = dialogueTrigger.dialogue;
+            }
+
+            interactTextBox.enabled = dialogue.enableDialogue;
+            interactTextBox.text = !dialogueManager.ShowingDialogue ? interactText : dialogueText;
             interactTextBox.transform.position = Camera.main.WorldToScreenPoint(npc.transform.position);
 
-            if (hasDialogue && Input.GetKeyDown(KeyCode.E))
+            if (dialogue.enableDialogue && hasDialogue && Input.GetKeyDown(KeyCode.E))
             {
                 Debug.Log("Hitting E...");
 
-                if (!dialogueManager.DialogueEnabled)
+                if (!dialogueManager.ShowingDialogue)
                 {
                     dialogueTrigger.TriggerDialogue();
                 }

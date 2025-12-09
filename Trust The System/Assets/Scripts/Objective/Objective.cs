@@ -13,8 +13,13 @@ public class Objective
     [Header("Dialogue (to replace)")]
     public DialogueTrigger dialogueTrigger;
     [TextArea(3, 5)] public string[] dialogue;
+    public bool disableDialogueAfterInteract = false;
 
     [Header("Objective (to replace)")]
     [TextArea(3, 5)] public string objective_2;
     public ObjectiveTrigger interactableToEnable;
+
+    [Header("NPC (to replace)")]
+    public DialogueTrigger other;
+    public bool enableOtherDialogue = false;
 }
