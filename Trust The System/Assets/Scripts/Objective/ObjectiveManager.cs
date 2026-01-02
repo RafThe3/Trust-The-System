@@ -5,6 +5,7 @@ using UnityEngine;
 public class ObjectiveManager : MonoBehaviour
 {
     public TextMeshProUGUI objectiveTextBox;
+    public AudioSource sfxSource;
     public AudioClip objectiveSFX;
 
     private float textSpeed = 1;
@@ -27,6 +28,7 @@ public class ObjectiveManager : MonoBehaviour
 
         if (objective.giveObjective && objectiveTextBox.text != objective.objective)
         {
+            sfxSource.clip = objectiveSFX;
             StopAllCoroutines();
             StartCoroutine(Write(objective.objective, objectiveTextBox));
 
@@ -44,7 +46,7 @@ public class ObjectiveManager : MonoBehaviour
         foreach (char letter in sentence.ToCharArray())
         {
             textBox.text += letter;
-            if (letter.ToString() != " ") Camera.main.GetComponent<AudioSource>().PlayOneShot(objectiveSFX);
+            if (letter.ToString() != " ") sfxSource.Play();
             yield return new WaitForSeconds(0.1f / textSpeed);
         }
     }

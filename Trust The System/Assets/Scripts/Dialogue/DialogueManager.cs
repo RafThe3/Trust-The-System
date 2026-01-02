@@ -10,7 +10,7 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI dialogueTextBox;
     public TextMeshProUGUI nameTextBox;
     public TextMeshProUGUI objectiveTextBox;
-    
+    public AudioSource sfxSource;
     public AudioClip dialogueSFX;
 
     private Queue<string> dialogue;
@@ -99,14 +99,16 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
+        sfxSource.clip = dialogueSFX;
+
         string sentence = dialogue.Dequeue();
         StopAllCoroutines();
-        StartCoroutine(Write(sentence, dialogueTextBox, dialogueSFX));
+        StartCoroutine(Write(sentence, dialogueTextBox));
 
         Debug.Log(sentence);
     }
 
-    private IEnumerator Write(string sentence, TextMeshProUGUI textBox, AudioClip sfx)
+    private IEnumerator Write(string sentence, TextMeshProUGUI textBox)
     {
         isTalking = true;
 
@@ -115,7 +117,7 @@ public class DialogueManager : MonoBehaviour
         foreach (char letter in sentence.ToCharArray())
         {
             textBox.text += letter;
-            if (letter.ToString() != " ") Camera.main.GetComponent<AudioSource>().PlayOneShot(sfx);
+            if (letter.ToString() != " ") sfxSource.Play();
             yield return new WaitForSeconds(0.1f / dialogueSpeed);
         }
 
@@ -133,8 +135,9 @@ public class DialogueManager : MonoBehaviour
 
         if (giveObjective && objectiveTextBox.text != objective)
         {
+            sfxSource.clip = FindFirstObjectByType<ObjectiveManager>().objectiveSFX;
             StopAllCoroutines();
-            StartCoroutine(Write(objective, objectiveTextBox, FindFirstObjectByType<ObjectiveManager>().objectiveSFX));
+            StartCoroutine(Write(objective, objectiveTextBox));
 
             if (enableInteractable && objectiveTrigger)
             {

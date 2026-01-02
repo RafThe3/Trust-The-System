@@ -1,3 +1,4 @@
+using Cinemachine;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
@@ -30,11 +31,13 @@ public class Player : MonoBehaviour
     private bool isMoving;
 
     private bool gameIsPaused = false;
+    private Camera mainCamera;
 
     private void Awake()
     {
         controller = GetComponent<FirstPersonController>();
         character = GetComponent<CharacterController>();
+        mainCamera = Camera.main;
     }
 
     private void Start()
@@ -124,7 +127,7 @@ public class Player : MonoBehaviour
 
     private void Dialogue()
     {
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, distance))
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, distance))
         {
             Debug.Log("Hitting something...");
 
@@ -147,7 +150,12 @@ public class Player : MonoBehaviour
 
             interactTextBox.enabled = dialogue.enableDialogue;
             interactTextBox.text = !dialogueManager.ShowingDialogue ? interactText : dialogueText;
-            interactTextBox.transform.position = Camera.main.WorldToScreenPoint(npc.transform.position);
+            interactTextBox.transform.position = mainCamera.WorldToScreenPoint(npc.transform.position);
+
+            if (interactTextBox.transform.position.z <= 0)
+            {
+                interactTextBox.enabled = false;
+            }
 
             if (dialogue.enableDialogue && hasDialogue && Input.GetKeyDown(KeyCode.E))
             {
@@ -171,7 +179,7 @@ public class Player : MonoBehaviour
 
     private void Interactable()
     {
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, distance))
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, distance))
         {
             Collider interactable = hit.collider;
             ObjectiveTrigger objectiveTrigger = interactable.GetComponent<ObjectiveTrigger>();
@@ -185,7 +193,7 @@ public class Player : MonoBehaviour
 
             interactTextBox.enabled = objectiveTrigger.objective.giveObjective;
             interactTextBox.text = interactText;
-            interactTextBox.transform.position = Camera.main.WorldToScreenPoint(interactable.transform.position);
+            interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
 
             if (hasTrigger && Input.GetKeyDown(KeyCode.E))
             {
@@ -193,6 +201,10 @@ public class Player : MonoBehaviour
 
                 objectiveTrigger.GiveObjective();
             }
+        }
+        else
+        {
+            interactTextBox.enabled = false;
         }
     }
 }
