@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using Cinemachine;
 using StarterAssets;
 using TMPro;
@@ -22,7 +24,9 @@ public class Player : MonoBehaviour
     public Image staminaBarFillArea;
 
     private readonly string interactText = "Press E to Interact";
-    private readonly string dialogueText = "Press E to Continue";
+    private readonly string dialogueText = "Press E to Talk";
+    private readonly string saveText = "Press E to Save Game";
+    private readonly string continueText = "Press E to Continue";
 
     private bool isOnSprintCooldown;
     private FirstPersonController controller;
@@ -65,8 +69,14 @@ public class Player : MonoBehaviour
         isMoving = Mathf.Abs(character.velocity.x) > Mathf.Epsilon || Mathf.Abs(character.velocity.z) > Mathf.Epsilon;
 
         Sprint();
+
+        /*
         Dialogue();
         Interactable();
+        Checkpoint();
+        */
+
+        CheckInteraction();
     }
 
     private void ToggleUI()
@@ -125,6 +135,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    /*
     private void Dialogue()
     {
         if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, distance))
@@ -149,7 +160,7 @@ public class Player : MonoBehaviour
             }
 
             interactTextBox.enabled = dialogue.enableDialogue;
-            interactTextBox.text = !dialogueManager.ShowingDialogue ? interactText : dialogueText;
+            interactTextBox.text = !dialogueManager.ShowingDialogue ? dialogueText : continueText;
             interactTextBox.transform.position = mainCamera.WorldToScreenPoint(npc.transform.position);
 
             if (interactTextBox.transform.position.z <= 0)
@@ -206,5 +217,125 @@ public class Player : MonoBehaviour
         {
             interactTextBox.enabled = false;
         }
+    }
+
+    private void Checkpoint()
+    {
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, distance))
+        {
+            Collider checkpoint = hit.collider;
+            bool isCheckpoint = checkpoint.CompareTag("Checkpoint");
+
+            if (!isCheckpoint)
+            {
+                return;
+            }
+
+            interactTextBox.enabled = isCheckpoint;
+            interactTextBox.text = hasSaved ? "Game Saved" : saveText;
+            interactTextBox.transform.position = mainCamera.WorldToScreenPoint(checkpoint.transform.position + Vector3.up);
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log("Hitting E...");
+
+                Player player = this;
+                SaveSystem.Save(ref player);
+                Debug.Log("Saved game...");
+            }
+        }
+        else
+        {
+            interactTextBox.enabled = false;
+        }
+    }
+    */
+
+    private void CheckInteraction()
+    {
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, distance))
+        {
+            Collider interactable = hit.collider;
+
+            DialogueTrigger dialogueTrigger = interactable.GetComponent<DialogueTrigger>();
+            DialogueManager dialogueManager = FindFirstObjectByType<DialogueManager>();
+            Dialogue dialogue = null;
+            bool hasDialogue = interactable.TryGetComponent(out DialogueTrigger _);
+            bool isNPC = interactable.CompareTag("NPC");
+
+            ObjectiveTrigger objectiveTrigger = interactable.GetComponent<ObjectiveTrigger>();
+            bool isInteractable = interactable.CompareTag("Interactable");
+            bool hasTrigger = interactable.TryGetComponent(out ObjectiveTrigger _);
+
+            bool isCheckpoint = interactable.CompareTag("Checkpoint");
+
+            if (isNPC)
+            {
+                if (hasDialogue)
+                {
+                    dialogue = dialogueTrigger.dialogue;
+                }
+
+                interactTextBox.enabled = dialogue.enableDialogue;
+                interactTextBox.text = !dialogueManager.ShowingDialogue ? dialogueText : continueText;
+                interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
+
+                if (hasDialogue && Input.GetKeyDown(KeyCode.E))
+                {
+                    if (!dialogueManager.ShowingDialogue)
+                    {
+                        dialogueTrigger.TriggerDialogue();
+                    }
+                    else
+                    {
+                        dialogueTrigger.NextSentence();
+                    }
+                }
+                return;
+            }
+
+            if (isInteractable)
+            {
+                interactTextBox.enabled = objectiveTrigger.objective.giveObjective;
+                interactTextBox.text = interactText;
+                interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
+
+                if (hasTrigger && Input.GetKeyDown(KeyCode.E))
+                {
+                    objectiveTrigger.GiveObjective();
+                }
+                return;
+            }
+
+            if (isCheckpoint)
+            {
+                interactTextBox.enabled = isCheckpoint;
+                interactTextBox.text = saveText;
+                interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position + Vector3.up);
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    Player player = this;
+                    SaveSystem.Save(ref player);
+                    Debug.Log("Saved game...");
+                }
+                return;
+            }
+        }
+
+        interactTextBox.enabled = false;
+    }
+}
+
+[Serializable]
+public class PlayerData
+{
+    public float x, y, z;
+
+    public PlayerData(Player player)
+    {
+        x = player.transform.position.x;
+        y = player.transform.position.y;
+        z = player.transform.position.z;
     }
 }
