@@ -12,7 +12,7 @@ public class DialogueDistance : MonoBehaviour
 
         if (!isPlayerNear)
         {
-            FindFirstObjectByType<DialogueManager>().ShowDialogue(false);
+            DialogueManager.Instance.ShowDialogue(false);
         }
     }
 

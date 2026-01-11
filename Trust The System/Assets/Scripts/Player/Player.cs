@@ -19,14 +19,9 @@ public class Player : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI interactTextBox;
-    public Image crosshair;
+    public GameObject crosshair;
     public Slider staminaBar;
     public Image staminaBarFillArea;
-
-    private readonly string interactText = "Press E to Interact";
-    private readonly string dialogueText = "Press E to Talk";
-    private readonly string saveText = "Press E to Save Game";
-    private readonly string continueText = "Press E to Continue";
 
     private bool isOnSprintCooldown;
     private FirstPersonController controller;
@@ -86,7 +81,13 @@ public class Player : MonoBehaviour
             image.enabled = !gameIsPaused;
         }
 
-        crosshair.enabled = !gameIsPaused;
+        Image[] crosshairImages = crosshair.GetComponentsInChildren<Image>();
+        
+        foreach (Image crosshairImage in crosshairImages)
+        {
+            crosshairImage.enabled = !gameIsPaused;
+        }
+
     }
 
     private void Sprint()
@@ -253,6 +254,14 @@ public class Player : MonoBehaviour
 
     private void CheckInteraction()
     {
+        string interactText = "Press E to Interact";
+        string dialogueText = "Press E to Talk";
+        string pickupText = "Press E to Pickup";
+        string saveText = "Press E to Save Game";
+        string continueText = "Press E to Continue";
+
+        bool hasInteracted = Input.GetKeyDown(KeyCode.E);
+
         if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out RaycastHit hit, distance))
         {
             Collider interactable = hit.collider;
@@ -269,6 +278,8 @@ public class Player : MonoBehaviour
 
             bool isCheckpoint = interactable.CompareTag("Checkpoint");
 
+            bool isItem = interactable.CompareTag("Item");
+
             if (isNPC)
             {
                 if (hasDialogue)
@@ -279,8 +290,8 @@ public class Player : MonoBehaviour
                 interactTextBox.enabled = dialogue.enableDialogue;
                 interactTextBox.text = !dialogueManager.ShowingDialogue ? dialogueText : continueText;
                 interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
-
-                if (hasDialogue && Input.GetKeyDown(KeyCode.E))
+                
+                if (hasDialogue && hasInteracted)
                 {
                     if (!dialogueManager.ShowingDialogue)
                     {
@@ -300,7 +311,7 @@ public class Player : MonoBehaviour
                 interactTextBox.text = interactText;
                 interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
 
-                if (hasTrigger && Input.GetKeyDown(KeyCode.E))
+                if (hasTrigger && hasInteracted)
                 {
                     objectiveTrigger.GiveObjective();
                 }
@@ -311,13 +322,35 @@ public class Player : MonoBehaviour
             {
                 interactTextBox.enabled = isCheckpoint;
                 interactTextBox.text = saveText;
-                interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position + Vector3.up);
+                Vector3 offset = Vector3.up;
+                interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position + offset);
 
-                if (Input.GetKeyDown(KeyCode.E))
+                if (hasInteracted)
                 {
+                    // Save the game
                     Player player = this;
                     SaveSystem.Save(ref player);
                     Debug.Log("Saved game...");
+                }
+                return;
+            }
+
+            if (isItem)
+            {
+                interactTextBox.enabled = isItem;
+                interactTextBox.text = pickupText;
+                interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
+
+                if (hasInteracted)
+                {
+                    // Pick up item
+                    Debug.Log($"Picking up {interactable.name}");
+                    GameObject item = interactable.gameObject;
+                    bool itemPickedUp = Inventory.Instance.Add(item);
+                    if (itemPickedUp)
+                    {
+                        Destroy(item);
+                    }
                 }
                 return;
             }

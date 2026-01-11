@@ -1,10 +1,25 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
     [Header("Health")]
     [Min(0)] public float health = 100;
+
+    [Header("UI")]
+    public Canvas enemyUI;
+    public Slider healthBar;
+
+    private float currentHealth = 0;
+
+    private void Start()
+    {
+        enemyUI.enabled = false;
+        currentHealth = health;
+        healthBar.maxValue = health;
+        healthBar.value = currentHealth;
+    }
 
     private void Update()
     {
@@ -12,13 +27,16 @@ public class Enemy : MonoBehaviour
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
 
         agent.destination = playerPosition.position;
+
+        enemyUI.enabled = currentHealth < health;
     }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
+        currentHealth -= damage;
+        healthBar.value = currentHealth;
 
-        if (health < 0)
+        if (currentHealth <= 0)
         {
             Die();
         }

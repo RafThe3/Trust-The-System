@@ -64,6 +64,7 @@ namespace StarterAssets
 
 		[HideInInspector] public bool _isSprinting;
 		[HideInInspector] public float _tempSprintSpeed;
+		[HideInInspector] public float _tempADSSpeed;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -124,7 +125,7 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 
-			RotationSpeed = Time.timeScale == 0 ? 0 : _tempRotationSpeed;
+            RotationSpeed = Time.timeScale == 0 ? 0 : Input.GetMouseButton(1) ? _tempRotationSpeed * _tempADSSpeed : _tempRotationSpeed;
 			_isSprinting = _input.sprint;
 		}
 
@@ -136,6 +137,11 @@ namespace StarterAssets
 		public void SetRotationSpeed(float speed)
 		{
 			_tempRotationSpeed = speed;
+		}
+
+		public void SetADSSpeed(float speed)
+		{
+			_tempADSSpeed = speed;
 		}
 
 		private void GroundedCheck()

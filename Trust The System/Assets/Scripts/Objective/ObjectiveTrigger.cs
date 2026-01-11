@@ -15,7 +15,7 @@ public class ObjectiveTrigger : MonoBehaviour
         DialogueTrigger other = objective.dialogueTrigger;
         Dialogue dialogue = other.dialogue;
 
-        FindFirstObjectByType<ObjectiveManager>().GiveObjective(objective);
+        ObjectiveManager.Instance.GiveObjective(objective);
 
         dialogue.dialogue = objective.dialogue; // changes the DIALOGUE of the NPC specified in the dialogue class
         dialogue.objective = objective.objective_2; // changes the OBJECTIVE of the NPC specified in the dialogue class

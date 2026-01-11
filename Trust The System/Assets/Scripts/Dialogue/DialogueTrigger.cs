@@ -6,11 +6,11 @@ public class DialogueTrigger : MonoBehaviour
 
     public void TriggerDialogue()
     {
-        FindFirstObjectByType<DialogueManager>().StartDialogue(dialogue);
+        DialogueManager.Instance.StartDialogue(dialogue);
     }
 
     public void NextSentence()
     {
-        FindFirstObjectByType<DialogueManager>().DisplayNextSentence();
+        DialogueManager.Instance.DisplayNextSentence();
     }
 }

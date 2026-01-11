@@ -6,6 +6,23 @@ using UnityEngine;
 
 public class DialogueManager : MonoBehaviour
 {
+    #region Singleton
+
+    public static DialogueManager Instance;
+
+    private void Awake()
+    {
+        if (Instance && Instance != this)
+        {
+            Debug.LogWarning($"More than one instance of DialogueManager found on {name}");
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    #endregion
+
     [Header("Dialogue")]
     public TextMeshProUGUI dialogueTextBox;
     public TextMeshProUGUI nameTextBox;

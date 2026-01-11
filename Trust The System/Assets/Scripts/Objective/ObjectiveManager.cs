@@ -4,6 +4,23 @@ using UnityEngine;
 
 public class ObjectiveManager : MonoBehaviour
 {
+    #region Singleton
+
+    public static ObjectiveManager Instance;
+
+    private void Awake()
+    {
+        if (Instance)
+        {
+            Debug.LogWarning($"More than one instance of ObjectiveManager found on {name}!");
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    #endregion
+
     public TextMeshProUGUI objectiveTextBox;
     public AudioSource sfxSource;
     public AudioClip objectiveSFX;
