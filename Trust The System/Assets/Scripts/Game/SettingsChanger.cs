@@ -7,16 +7,18 @@ public class SettingsChanger : MonoBehaviour
 {
     [SerializeField] private Slider slider;
     [SerializeField] private TextMeshProUGUI valueText;
+    [SerializeField] private float defaultValue = 1f;
     [SerializeField] private bool addPercentSign = true;
-    [Min(0), Range(0, 3), SerializeField] private int moveDecimalPlaces = 1;
     [SerializeField] private string settingType = string.Empty;
+    [Min(0), Range(0, 3), SerializeField] private int moveDecimalPlaces = 1;
 
     private float decimalPlaces = 1;
 
     private void Start()
     {
-        slider.value = PlayerPrefs.GetFloat(settingType, 1);
+        slider.value = PlayerPrefs.GetFloat(settingType, defaultValue);
         decimalPlaces = Mathf.Pow(10, moveDecimalPlaces);
+        Debug.Log($"Value: {PlayerPrefs.GetFloat(settingType, defaultValue)}");
     }
 
     private void Update()
@@ -41,13 +43,7 @@ public class SettingsChanger : MonoBehaviour
         valueText.text = !addPercentSign ? value : $"{value}%";
     }
 
-    public void AddSliderValue()
-    {
-        slider.value++;
-    }
+    public void AddSliderValue() => slider.value++;
 
-    public void DecreaseSliderValue()
-    {
-        slider.value--;
-    }
+    public void DecreaseSliderValue() => slider.value--;
 }

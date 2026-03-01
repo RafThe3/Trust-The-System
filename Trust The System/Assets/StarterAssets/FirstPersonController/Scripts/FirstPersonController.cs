@@ -65,6 +65,7 @@ namespace StarterAssets
 		[HideInInspector] public bool _isSprinting;
 		[HideInInspector] public float _tempSprintSpeed;
 		[HideInInspector] public float _tempADSSpeed;
+		[HideInInspector] public float _tempFOV;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -117,6 +118,7 @@ namespace StarterAssets
 
 			if (_tempRotationSpeed == 0) _tempRotationSpeed = RotationSpeed;
 			_tempSprintSpeed = SprintSpeed;
+			_tempFOV = Camera.main.fieldOfView;
 		}
 
 		private void Update()
@@ -125,7 +127,7 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 
-            RotationSpeed = Time.timeScale == 0 ? 0 : Input.GetMouseButton(1) ? _tempRotationSpeed * _tempADSSpeed : _tempRotationSpeed;
+            RotationSpeed = Time.timeScale == 0 ? 0 : Input.GetMouseButton(1) ? _tempADSSpeed : _tempRotationSpeed;
 			_isSprinting = _input.sprint;
 		}
 

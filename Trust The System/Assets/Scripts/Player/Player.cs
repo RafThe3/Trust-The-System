@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using Cinemachine;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -15,10 +15,10 @@ public class Player : MonoBehaviour
     [Min(0)] public float staminaRecoverySpeed = 1;
 
     [Header("Ray")]
-    public float distance = 1;
+    [Min(0)] public float distance = 1;
 
     [Header("UI")]
-    public TextMeshProUGUI interactTextBox;
+    public TextMeshProUGUI interactTextBox, gameSavedTextBox;
     public GameObject crosshair;
     public Slider staminaBar;
     public Image staminaBarFillArea;
@@ -42,11 +42,15 @@ public class Player : MonoBehaviour
     private void Start()
     {
         interactTextBox.enabled = false;
+        gameSavedTextBox.enabled = false;
 
         staminaBar.maxValue = sprintDuration;
         staminaBar.value = sprintDuration;
         staminaBarImages = staminaBar.GetComponentsInChildren<Image>();
         staminaBarFillArea.color = Color.yellow;
+
+        Debug.Log(Application.persistentDataPath);
+        LoadPlayer();
     }
 
     private void Update()
@@ -58,7 +62,13 @@ public class Player : MonoBehaviour
         if (gameIsPaused)
         {
             interactTextBox.enabled = false;
+            gameSavedTextBox.enabled = false;
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadPlayer();
         }
 
         isMoving = Mathf.Abs(character.velocity.x) > Mathf.Epsilon || Mathf.Abs(character.velocity.z) > Mathf.Epsilon;
@@ -291,7 +301,7 @@ public class Player : MonoBehaviour
                 interactTextBox.text = !dialogueManager.ShowingDialogue ? dialogueText : continueText;
                 interactTextBox.transform.position = mainCamera.WorldToScreenPoint(interactable.transform.position);
                 
-                if (hasDialogue && hasInteracted)
+                if (hasDialogue && hasInteracted && dialogue.enableDialogue)
                 {
                     if (!dialogueManager.ShowingDialogue)
                     {
@@ -328,9 +338,9 @@ public class Player : MonoBehaviour
                 if (hasInteracted)
                 {
                     // Save the game
-                    Player player = this;
-                    SaveSystem.Save(ref player);
-                    Debug.Log("Saved game...");
+                    SavePlayer();
+
+                    StartCoroutine(EnableTextBox(gameSavedTextBox, 5));
                 }
                 return;
             }
@@ -358,17 +368,49 @@ public class Player : MonoBehaviour
 
         interactTextBox.enabled = false;
     }
+
+    private IEnumerator EnableTextBox(TextMeshProUGUI text, float duration)
+    {
+        text.enabled = true;
+        yield return new WaitForSeconds(duration);
+        text.enabled = false;
+    }
+
+    public void SavePlayer()
+    {
+        Player player = this;
+        SaveSystem.Save(ref player);
+        Debug.Log("Saved game...");
+    }
+
+    public void LoadPlayer()
+    {
+        PlayerData playerData = SaveSystem.Load();
+
+        // player position
+        Vector3 newPlayerPos = new(playerData.x, playerData.y, playerData.z);
+
+        controller.enabled = false;
+        transform.position = newPlayerPos;
+        Physics.SyncTransforms();
+        controller.enabled = true;
+
+        Debug.Log("Loaded game...");
+        Debug.Log($"Save Coordinates: {playerData.x}, {playerData.y}, {playerData.z}");
+    }
 }
 
 [Serializable]
 public class PlayerData
 {
     public float x, y, z;
+    public int sceneIndex;
 
     public PlayerData(Player player)
     {
         x = player.transform.position.x;
         y = player.transform.position.y;
         z = player.transform.position.z;
+        sceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 }

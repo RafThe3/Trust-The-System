@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.IO;
+using System;
 
 public static class SaveSystem
 {
     public static readonly string file = Path.Combine(Application.persistentDataPath, "save");
 
-    public static readonly string keyword = "administrator-developer-password-2026";
+    public static readonly string keyword = "$administrator-developer-password-2026$";
 
     public static string dataString = string.Empty;
 
@@ -21,8 +22,13 @@ public static class SaveSystem
 
     public static PlayerData Load()
     {
-        if (File.Exists(file))
+        try
         {
+            if (!File.Exists(file))
+            {
+                throw new FileNotFoundException("Cannot locate save file");
+            }
+
             using FileStream stream = new(file, FileMode.Open);
             using StreamReader reader = new(stream);
             dataString = reader.ReadToEnd();
@@ -30,18 +36,27 @@ public static class SaveSystem
             PlayerData data = JsonUtility.FromJson<PlayerData>(dataString);
             return data;
         }
-        else
+        catch (FileNotFoundException exception)
         {
-            Debug.LogError("The file does not exist.");
+            Debug.LogException(exception);
             return null;
         }
     }
 
     public static void Delete()
     {
-        if (File.Exists(file))
+        try
         {
+            if (!File.Exists(file))
+            {
+                throw new FileNotFoundException("Cannot locate save file.");
+            }
+
             File.Delete(file);
+        }
+        catch (FileNotFoundException exception)
+        {
+            Debug.LogException(exception);
         }
     }
 

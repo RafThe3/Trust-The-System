@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3775876674183002231}
   - component: {fileID: 7876201014876299604}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Ray-Projectile Tracer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
