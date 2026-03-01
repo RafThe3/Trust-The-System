@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ResolutionMode : MonoBehaviour
+public class ResolutionMode : UnityEngine.MonoBehaviour
 {
     private TMP_Dropdown dropdown;
     private Resolution[] resolutions;

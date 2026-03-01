@@ -5,6 +5,9 @@ public class Inventory : MonoBehaviour
 {
     public static Inventory Instance;
 
+    public List<GameObject> items = new();
+    public int space = 1;
+
     private void Awake()
     {
         if (Instance)
@@ -16,14 +19,11 @@ public class Inventory : MonoBehaviour
         Instance = this;
     }
 
-    public List<GameObject> items = new();
-    public int space = 1;
-
-    public bool Add(GameObject item)
+    public virtual bool Add(GameObject item)
     {
         if (items.Count >= space)
         {
-            Debug.Log("Not enough room!");
+            Debug.LogError("Not enough room!");
             return false;
         }
 

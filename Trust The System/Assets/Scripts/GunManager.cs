@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GunManager : MonoBehaviour
+public class GunManager : UnityEngine.MonoBehaviour
 {
     #region Singleton
 

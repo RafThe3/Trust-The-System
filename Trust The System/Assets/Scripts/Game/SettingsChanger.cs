@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SettingsChanger : MonoBehaviour
+public class SettingsChanger : UnityEngine.MonoBehaviour
 {
     [SerializeField] private Slider slider;
     [SerializeField] private TextMeshProUGUI valueText;

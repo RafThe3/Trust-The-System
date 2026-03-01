@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BillboardFX : MonoBehaviour
+public class BillboardFX : UnityEngine.MonoBehaviour
 {
     [SerializeField] private Transform camTransform;
 

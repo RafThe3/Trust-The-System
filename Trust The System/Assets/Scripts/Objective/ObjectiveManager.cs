@@ -2,7 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class ObjectiveManager : MonoBehaviour
+public class ObjectiveManager : UnityEngine.MonoBehaviour
 {
     #region Singleton
 

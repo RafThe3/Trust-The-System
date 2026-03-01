@@ -9,7 +9,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
 #endif
-	public class FirstPersonController : MonoBehaviour
+	public class FirstPersonController : UnityEngine.MonoBehaviour
 	{
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]

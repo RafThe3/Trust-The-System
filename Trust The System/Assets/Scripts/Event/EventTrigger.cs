@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EventTrigger : MonoBehaviour
+public class EventTrigger : UnityEngine.MonoBehaviour
 {
     public Event _event;
 

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : UnityEngine.MonoBehaviour
 {
     #region Singleton
 

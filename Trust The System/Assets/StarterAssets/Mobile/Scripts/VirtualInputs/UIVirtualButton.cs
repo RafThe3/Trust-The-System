@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-public class UIVirtualButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+public class UIVirtualButton : UnityEngine.MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
     [System.Serializable]
     public class BoolEvent : UnityEvent<bool> { }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Fullscreen : MonoBehaviour
+public class Fullscreen : UnityEngine.MonoBehaviour
 {
     public bool fullscreen = true;
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Vsync : MonoBehaviour
+public class Vsync : UnityEngine.MonoBehaviour
 {
     public bool enableVsync = true;
     private Toggle toggle;

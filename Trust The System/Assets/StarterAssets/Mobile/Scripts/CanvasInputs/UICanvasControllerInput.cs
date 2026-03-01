@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace StarterAssets
 {
-    public class UICanvasControllerInput : MonoBehaviour
+    public class UICanvasControllerInput : UnityEngine.MonoBehaviour
     {
 
         [Header("Output")]

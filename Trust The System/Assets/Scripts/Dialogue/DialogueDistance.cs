@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DialogueDistance : MonoBehaviour
+public class DialogueDistance : UnityEngine.MonoBehaviour
 {
     public float dialogueDistance = 1;
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AmmoBox : MonoBehaviour
+public class AmmoBox : UnityEngine.MonoBehaviour
 {
     public int amountToGive = 30;
 

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class ObjectiveTrigger : MonoBehaviour
+public class ObjectiveTrigger : UnityEngine.MonoBehaviour
 {
     public Objective objective;
 

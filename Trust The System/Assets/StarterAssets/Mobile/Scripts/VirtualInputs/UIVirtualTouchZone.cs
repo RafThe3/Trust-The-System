@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-public class UIVirtualTouchZone : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class UIVirtualTouchZone : UnityEngine.MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [System.Serializable]
     public class Event : UnityEvent<Vector2> { }

@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-public class MobileDisableAutoSwitchControls : MonoBehaviour
+public class MobileDisableAutoSwitchControls : UnityEngine.MonoBehaviour
 {
     
 #if ENABLE_INPUT_SYSTEM && (UNITY_IOS || UNITY_ANDROID)

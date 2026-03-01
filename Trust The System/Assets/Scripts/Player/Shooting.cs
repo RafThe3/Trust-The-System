@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Shooting : MonoBehaviour
+public class Shooting : UnityEngine.MonoBehaviour
 {
     [Header("Settings")]
     public bool canShoot = true;

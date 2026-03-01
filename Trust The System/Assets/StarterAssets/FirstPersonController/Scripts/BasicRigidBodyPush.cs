@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BasicRigidBodyPush : MonoBehaviour
+public class BasicRigidBodyPush : UnityEngine.MonoBehaviour
 {
 	public LayerMask pushLayers;
 	public bool canPush;

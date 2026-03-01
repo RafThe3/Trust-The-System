@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using StarterAssets;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenu : UnityEngine.MonoBehaviour
 {
     [SerializeField] private Canvas pauseMenu;
 

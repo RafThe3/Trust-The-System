@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class ShowFps : MonoBehaviour
+public class ShowFps : UnityEngine.MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI fpsText;
     [Tooltip("How often it counts the frames."), Min(0), SerializeField] private float pollingTime = 1;

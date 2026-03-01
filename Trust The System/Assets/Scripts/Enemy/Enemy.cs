@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : UnityEngine.MonoBehaviour
 {
     [Header("Health")]
     [Min(0)] public float health = 100;

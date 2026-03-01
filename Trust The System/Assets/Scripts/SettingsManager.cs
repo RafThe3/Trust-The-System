@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SettingsManager : MonoBehaviour
+public class SettingsManager : UnityEngine.MonoBehaviour
 {
     public static SettingsManager instance;
 
